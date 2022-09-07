@@ -1,20 +1,37 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Route, Routes} from "react-router-dom";
-import About from "./utils/About";
-import Posts from "../pages/Posts";
-import Error from "../pages/Error";
-import PostIdPage from "../pages/PostIdPage";
-import {routes} from "../Router";
+import {privateRoutes, publicRoutes} from "../Router";
+import {AuthContext} from "../context";
+import Loader from "./UI/Loader/Loader";
 
 const AppRouter = () => {
+    const {isAuth, isLoading} = useContext(AuthContext)
+    if (isLoading) {
+        return <Loader/>
+    }
     return (
-        <Routes>
-            {routes.map(route =>
-                <Route exact={route.exact}
-                       path={route.path}
-                       element={route.element} />
-            )}
-        </Routes>
+        isAuth
+            ?
+            <Routes>
+                {privateRoutes.map(route =>
+                    <Route exact={route.exact}
+                           path={route.path}
+                           element={route.element}
+                           key={route.path}
+                    />
+                )}
+            </Routes>
+            :
+            <Routes>
+                {publicRoutes.map(route =>
+                    <Route exact={route.exact}
+                           path={route.path}
+                           element={route.element}
+                           key={route.path}
+                    />
+                )}
+            </Routes>
+
     )
 };
 
